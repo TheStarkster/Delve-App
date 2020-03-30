@@ -1,9 +1,10 @@
-import 'package:delve/components/about_city.dart';
-import 'package:delve/components/queries.dart';
-import 'package:delve/components/sub-components/animatedbutton/animated_button.dart';
+import 'package:flutter_app/components/about_city.dart';
+import 'package:flutter_app/components/agenda.dart';
+import 'package:flutter_app/components/queries.dart';
 import 'package:flutter/material.dart';
-import 'package:delve/components/profile.dart';
-import 'package:delve/components/contact.dart';
+import 'package:flutter_app/components/contact.dart';
+import 'package:flutter_app/components/profile.dart';
+import 'package:flutter_app/components/sub-components/animatedbutton/animated_button.dart';
 
 class BottomBarNavigationPatternExample extends StatefulWidget {
   final List<BarItem> barItems = [
@@ -355,21 +356,31 @@ class _BottomBarNavigationPatternExampleState
                             SizedBox(
                               width: 35,
                             ),
-                            Container(
-                              width: 160,
-                              height: 160,
-                              decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20)),
-                                  color: Colors.blueGrey,
-                                  image: DecorationImage(
-                                      fit: BoxFit.cover,
-                                      image: new AssetImage(
-                                          'assets/images/abc.jpg'))),
-                              child: Image.network(
-                                image,
-                                height: 100,
-                                width: 100,
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => Agenda(),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                width: 160,
+                                height: 160,
+                                decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(20)),
+                                    color: Colors.blueGrey,
+                                    image: DecorationImage(
+                                        fit: BoxFit.cover,
+                                        image: new AssetImage(
+                                            'assets/images/abc.jpg'))),
+                                child: Image.network(
+                                  image,
+                                  height: 100,
+                                  width: 100,
+                                ),
                               ),
                             ),
                           ],

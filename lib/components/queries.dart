@@ -1,5 +1,5 @@
-import 'package:delve/components/home.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/components/home.dart';
 
 class Queries extends StatelessWidget {
   @override
@@ -144,10 +144,61 @@ class _MyHomePageState extends State<MyHomePage> {
                             child: Text(
                               'Recent Queries',
                               style: TextStyle(
-                                  fontSize: 20, color: Colors.black87),
+                                fontSize: 20,
+                                color: Colors.black87,
+                              ),
                               textAlign: TextAlign.left,
                             ),
                           )
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(20, 500, 20, 0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          Container(
+                            child: Text(
+                              'Submit your query. We try to contact or Answer your query as soon as possible',
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.black),
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Container(
+                            child: Text(
+                              'Submit your query. We try to contact or Answer your query as soon as possible',
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.black),
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Container(
+                            child: Text(
+                              'Submit your query. We try to contact or Answer your query as soon as possible',
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.black),
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Container(
+                            child: Text(
+                              'Submit your query. We try to contact or Answer your query as soon as possible',
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.black),
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
                         ],
                       ),
                     ),
