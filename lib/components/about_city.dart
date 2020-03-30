@@ -1,5 +1,5 @@
-import 'package:delve/components/home.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/components/home.dart';
 
 class City extends StatelessWidget {
   @override
@@ -66,13 +66,29 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                     Container(
-                      padding: EdgeInsets.fromLTRB(0, 50, 0, 0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.fromLTRB(0, 50, 0, 0),
+                            child: Text(
+                              'About City',
+                              style:
+                                  TextStyle(fontSize: 26, color: Colors.black),
+                              textAlign: TextAlign.center,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Container(
                             width: 400,
-                            height: 300,
+                            height: 250,
                             decoration: BoxDecoration(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10)),
@@ -85,6 +101,87 @@ class _MyHomePageState extends State<MyHomePage> {
                               image,
                               height: 100,
                               width: 100,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(0, 400, 0, 0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Container(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: <Widget>[
+                                Container(
+                                  width: 130,
+                                  height: 200,
+                                  decoration: BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(30)),
+                                      color: Colors.yellow),
+                                ),
+                                Container(
+                                  width: 250,
+                                  height: 200,
+                                  decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(0)),
+                                    color: Colors.yellow,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            width: 400,
+                            height: 250,
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                              color: Colors.black12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(0, 700, 0, 0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Container(
+                            child: Container(
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: <Widget>[
+                                  Container(
+                                    width: 130,
+                                    height: 200,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(30)),
+                                        color: Colors.yellow),
+                                  ),
+                                  Container(
+                                    width: 250,
+                                    height: 200,
+                                    decoration: BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(0)),
+                                      color: Colors.yellow,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            width: 400,
+                            height: 250,
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                              color: Colors.black12,
                             ),
                           ),
                         ],

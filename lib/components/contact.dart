@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:delve/components/home.dart';
+import 'package:flutter_app/components/home.dart';
 
 class Contact extends StatelessWidget {
   @override

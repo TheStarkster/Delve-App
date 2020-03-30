@@ -1,4 +1,4 @@
-import 'package:delve/components/home.dart';
+import 'package:flutter_app/components/home.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
