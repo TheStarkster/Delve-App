@@ -1,4 +1,4 @@
-package grevity.com.flutter_app
+package com.grevity.delve_app
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

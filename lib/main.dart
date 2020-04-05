@@ -1,284 +1,331 @@
-import 'package:flutter_app/components/home.dart';
+import 'package:delve_app/components/home.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(DelveApp());
 
-class MyApp extends StatelessWidget {
+class DelveApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: new MyHomePage(),
+    return MaterialApp(
+      home: LoginAndVerify(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
+class LoginAndVerify extends StatefulWidget {
+  LoginAndVerify({Key key}) : super(key: key);
   @override
-  _MyHomePageState createState() => new _MyHomePageState();
+  _LoginAndVerifyState createState() => _LoginAndVerifyState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _LoginAndVerifyState extends State<LoginAndVerify> {
   PageController pageController = new PageController();
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        resizeToAvoidBottomInset: false,
-        backgroundColor: Colors.black,
-        body: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-                image: new AssetImage("assets/images/background.jpg"),
-                fit: BoxFit.cover),
+    return Scaffold(
+      body: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/background.jpg'),
+            fit: BoxFit.fill,
           ),
-          child: Column(
-            children: <Widget>[
-              new Image(
-                image: new AssetImage(
-                  "assets/images/logo.png",
+        ),
+        child: SingleChildScrollView(
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            child: Flex(
+              direction: Axis.vertical,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Expanded(
+                  flex: 6,
+                  child: Image.asset('assets/images/logo.png'),
                 ),
-                width: 350,
-                height: 300,
+                Expanded(
+                  flex: 8,
+                  child: PageView(
+                    controller: pageController,
+                    children: <Widget>[
+                      EventCodeView(pageController),
+                      MobileNumberView(pageController),
+                      OTPView(),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class EventCodeView extends StatefulWidget {
+  PageController pageController;
+  EventCodeView(this.pageController);
+  @override
+  _EventCodeViewState createState() => _EventCodeViewState();
+}
+
+class _EventCodeViewState extends State<EventCodeView> {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.all(43),
+      child: Container(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Icon(
+              Icons.calendar_today,
+              color: Colors.white,
+              size: 28,
+            ),
+            Text(
+              "Please Enter",
+              style: TextStyle(
+                color: Colors.white,
+                fontFamily: 'Raleway-Regular',
+                fontSize: 30,
               ),
-              Container(
-                height: MediaQuery.of(context).size.height / 2,
-                width: MediaQuery.of(context).size.width,
-                child: PageView(
-                  controller: pageController,
-                  children: <Widget>[
-                    Container(
-                      color: Colors.transparent,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Container(
-                            padding: EdgeInsets.fromLTRB(70, 10, 0, 0),
-                            child: new Image(
-                              image: new AssetImage(
-                                  "assets/images/calender_logo.png"),
-                              width: 30,
-                            ),
-                          ),
-                          Container(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Container(
-                                  padding: EdgeInsets.fromLTRB(70, 8, 110, 0),
-                                  child: Text(
-                                    'Please Enter',
-                                    style: TextStyle(
-                                        fontSize: 30, color: Colors.white),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                          Container(
-                            padding: EdgeInsets.fromLTRB(70.0, 8.0, 140, 0.0),
-                            child: Text(
-                              'The Event Code',
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.white70,
-                              ),
-                            ),
-                          ),
-                          Container(
-                            padding: EdgeInsets.fromLTRB(70, 10, 70, 0),
-                            child: Column(
-                              children: <Widget>[
-                                TextField(
-                                  decoration: InputDecoration(
-                                      hintText: '',
-                                      hintStyle: TextStyle(
-                                        fontSize: 40,
-                                        color: Colors.white,
-                                      ),
-                                      focusedBorder: UnderlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: Colors.white))),
-                                )
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 80),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              MaterialButton(
-                                minWidth: 250,
-                                onPressed: () {
-                                  pageController.animateToPage(1,
-                                      duration: Duration(seconds: 1),
-                                      curve: Curves.fastOutSlowIn);
-                                },
-                                padding: EdgeInsets.all(20),
-                                child: Text(
-                                  'ENTER',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                color: Colors.purple[900],
-                                shape: StadiumBorder(),
-                              )
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                    Container(
-                      color: Colors.transparent,
-                      child: Column(
-                        children: <Widget>[
-                          Container(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Container(
-                                  padding: EdgeInsets.fromLTRB(70, 50, 0, 0),
-                                  child: Text(
-                                    'Please Enter',
-                                    style: TextStyle(
-                                        fontSize: 30, color: Colors.white),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Container(
-                                  padding:
-                                      EdgeInsets.fromLTRB(70.0, 5.0, 00, 0.0),
-                                  child: Text(
-                                    'Registered Mobile Number',
-                                    style: TextStyle(
-                                        fontSize: 20, color: Colors.white70),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            padding: EdgeInsets.fromLTRB(70, 27, 70, 0),
-                            child: Column(
-                              children: <Widget>[
-                                TextField(
-                                  decoration: InputDecoration(
-                                      hintText: '',
-                                      hintStyle: TextStyle(color: Colors.white),
-                                      focusedBorder: UnderlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: Colors.white))),
-                                )
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 80),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              MaterialButton(
-                                minWidth: 250,
-                                onPressed: () {
-                                  pageController.animateToPage(2,
-                                      duration: Duration(seconds: 1),
-                                      curve: Curves.fastOutSlowIn);
-                                },
-                                padding: EdgeInsets.all(20),
-                                child: Text(
-                                  'Verify',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                color: Colors.purple[900],
-                                shape: StadiumBorder(),
-                              )
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                    Container(
-                        color: Colors.transparent,
-                        child: Column(
-                          children: <Widget>[
-                            Container(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Container(
-                                    padding: EdgeInsets.fromLTRB(70, 50, 0, 0),
-                                    child: Text(
-                                      'Please Enter OTP',
-                                      style: TextStyle(
-                                          fontSize: 30, color: Colors.white),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.fromLTRB(70, 53, 70, 0),
-                              child: Column(
-                                children: <Widget>[
-                                  TextField(
-                                    decoration: InputDecoration(
-                                        hintText: '',
-                                        hintStyle:
-                                            TextStyle(color: Colors.white),
-                                        focusedBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Colors.white))),
-                                  )
-                                ],
-                              ),
-                            ),
-                            SizedBox(height: 80),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                MaterialButton(
-                                  minWidth: 250,
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => Home(),
-                                      ),
-                                    );
-                                  },
-                                  padding: EdgeInsets.all(20),
-                                  child: Text(
-                                    'LOGIN',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  color: Colors.purple[900],
-                                  shape: StadiumBorder(),
-                                )
-                              ],
-                            )
-                          ],
-                        ))
-                  ],
+            ),
+            Text(
+              "The Event Code",
+              style: TextStyle(
+                color: Colors.white,
+                fontFamily: 'Raleway-Light',
+                fontSize: 21,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(bottom: 34, top: 8),
+              child: TextField(
+                keyboardType: TextInputType.number,
+                inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+                decoration: InputDecoration(
+                  border: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
                 ),
               ),
-            ],
-          ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                MaterialButton(
+                  elevation: 0.0,
+                  minWidth: 150,
+                  height: 42,
+                  onPressed: () {
+                    widget.pageController.animateToPage(
+                      1,
+                      duration: Duration(milliseconds: 1200),
+                      curve: Curves.fastLinearToSlowEaseIn,
+                    );
+                  },
+                  color: Color(0xFF2E375C),
+                  shape: StadiumBorder(),
+                  child: Text(
+                    "Enter",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontFamily: 'Raleway-Medium',
+                    ),
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class MobileNumberView extends StatefulWidget {
+  PageController pageController;
+  MobileNumberView(this.pageController);
+  @override
+  _MobileNumberViewState createState() => _MobileNumberViewState();
+}
+
+class _MobileNumberViewState extends State<MobileNumberView> {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.all(43),
+      child: Container(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Icon(
+              Icons.calendar_today,
+              color: Colors.transparent,
+              size: 28,
+            ),
+            Text(
+              "Please Enter",
+              style: TextStyle(
+                color: Colors.white,
+                fontFamily: 'Raleway-Regular',
+                fontSize: 30,
+              ),
+            ),
+            Text(
+              "Registered Mobile Number",
+              style: TextStyle(
+                color: Colors.white,
+                fontFamily: 'Raleway-Light',
+                fontSize: 21,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(bottom: 34, top: 8),
+              child: TextField(
+                keyboardType: TextInputType.number,
+                inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+                decoration: InputDecoration(
+                  border: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                ),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                MaterialButton(
+                  minWidth: 150,
+                  elevation: 0.0,
+                  height: 42,
+                  onPressed: () {
+                    widget.pageController.animateToPage(
+                      2,
+                      duration: Duration(milliseconds: 1200),
+                      curve: Curves.fastLinearToSlowEaseIn,
+                    );
+                  },
+                  color: Color(0xFF2E375C),
+                  shape: StadiumBorder(),
+                  child: Text(
+                    "Verify",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontFamily: 'Raleway-Medium',
+                    ),
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class OTPView extends StatefulWidget {
+  @override
+  _OTPViewState createState() => _OTPViewState();
+}
+
+class _OTPViewState extends State<OTPView> {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.all(43),
+      child: Container(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Icon(
+              Icons.calendar_today,
+              color: Colors.transparent,
+              size: 28,
+            ),
+            Text(
+              "Please Enter OTP",
+              style: TextStyle(
+                color: Colors.white,
+                fontFamily: 'Raleway-Regular',
+                fontSize: 30,
+              ),
+            ),
+            Text(
+              "Registered Mobile Number",
+              style: TextStyle(
+                color: Colors.transparent,
+                fontFamily: 'Raleway-Light',
+                fontSize: 21,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(bottom: 34, top: 8),
+              child: TextField(
+                keyboardType: TextInputType.number,
+                inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+                decoration: InputDecoration(
+                  border: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                ),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                MaterialButton(
+                  minWidth: 150,
+                  elevation: 0.0,
+                  height: 42,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Home(),
+                      ),
+                    );
+                  },
+                  color: Color(0xFF2E375C),
+                  shape: StadiumBorder(),
+                  child: Text(
+                    "Login",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontFamily: 'Raleway-Medium',
+                    ),
+                  ),
+                ),
+              ],
+            )
+          ],
         ),
       ),
     );
