@@ -1,14 +1,48 @@
 import 'package:delve_app/components/home.dart';
+import 'package:delve_app/models/event.dart';
+import 'package:delve_app/models/user.dart';
+import 'package:delve_app/providers/event.dart';
+import 'package:delve_app/providers/user.dart';
+import 'package:delve_app/utils/repository/api/constants.dart';
+import 'package:delve_app/utils/repository/api/handlers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() => runApp(DelveApp());
+void setupLocator() {
+  GetIt.I.registerLazySingleton(() => ApiConstants());
+}
+SharedPreferences prefs;
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  setupLocator();
+  prefs = await SharedPreferences.getInstance();
+  return runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => UserContext(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => EventContext(),
+        ),
+      ],
+      child: DelveApp(prefs),
+    ),
+  );
+}
 
 class DelveApp extends StatelessWidget {
+  final SharedPreferences prefs;
+  DelveApp(this.prefs);
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: LoginAndVerify(),
+      home: prefs.getBool("isLoggedIn") == null
+          ? LoginAndVerify()
+          : prefs.getBool("isLoggedIn") ? Home() : LoginAndVerify(),
     );
   }
 }
@@ -20,6 +54,13 @@ class LoginAndVerify extends StatefulWidget {
 }
 
 class _LoginAndVerifyState extends State<LoginAndVerify> {
+  UserContext userContext;
+  @override
+  void initState() {
+    super.initState();
+    userContext = Provider.of<UserContext>(context, listen: false);
+  }
+
   PageController pageController = new PageController();
   @override
   Widget build(BuildContext context) {
@@ -49,10 +90,11 @@ class _LoginAndVerifyState extends State<LoginAndVerify> {
                 Expanded(
                   flex: 8,
                   child: PageView(
+                    physics: NeverScrollableScrollPhysics(),
                     controller: pageController,
                     children: <Widget>[
-                      EventCodeView(pageController),
-                      MobileNumberView(pageController),
+                      EventCodeView(pageController, userContext),
+                      MobileNumberView(pageController, userContext),
                       OTPView(),
                     ],
                   ),
@@ -67,13 +109,18 @@ class _LoginAndVerifyState extends State<LoginAndVerify> {
 }
 
 class EventCodeView extends StatefulWidget {
-  PageController pageController;
-  EventCodeView(this.pageController);
+  final PageController pageController;
+  final UserContext userContext;
+  EventCodeView(this.pageController, this.userContext);
   @override
   _EventCodeViewState createState() => _EventCodeViewState();
 }
 
 class _EventCodeViewState extends State<EventCodeView> {
+  TextEditingController _eventCode = new TextEditingController();
+  ApiConstants get apiconstants => GetIt.I<ApiConstants>();
+  ApiHandlers apiHandlers = new ApiHandlers();
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -106,6 +153,9 @@ class _EventCodeViewState extends State<EventCodeView> {
             Padding(
               padding: EdgeInsets.only(bottom: 34, top: 8),
               child: TextField(
+                style: TextStyle(color: Colors.white, fontSize: 18),
+                cursorColor: Color(0xFF080F2F),
+                controller: _eventCode,
                 keyboardType: TextInputType.number,
                 inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
                 decoration: InputDecoration(
@@ -128,12 +178,40 @@ class _EventCodeViewState extends State<EventCodeView> {
                   elevation: 0.0,
                   minWidth: 150,
                   height: 42,
-                  onPressed: () {
-                    widget.pageController.animateToPage(
-                      1,
-                      duration: Duration(milliseconds: 1200),
-                      curve: Curves.fastLinearToSlowEaseIn,
-                    );
+                  onPressed: () async {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return Center(
+                            child: CircularProgressIndicator(
+                              valueColor: new AlwaysStoppedAnimation<Color>(
+                                Color(0xFF080F2F),
+                              ),
+                            ),
+                          );
+                        });
+                    var result = await apiHandlers.getEvent(_eventCode.text);
+                    Navigator.pop(context);
+                    if (result != 0) {
+                      prefs.setString("EventId", _eventCode.text);
+                      widget.userContext.setUser(User.fromJSON(result));
+                      widget.pageController.animateToPage(
+                        1,
+                        duration: Duration(milliseconds: 1200),
+                        curve: Curves.fastLinearToSlowEaseIn,
+                      );
+                    } else {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: Text("No Such Event"),
+                              content: Text(
+                                "The Event in you're trying to login in to is not available, double check your input",
+                              ),
+                            );
+                          });
+                    }
                   },
                   color: Color(0xFF2E375C),
                   shape: StadiumBorder(),
@@ -156,13 +234,23 @@ class _EventCodeViewState extends State<EventCodeView> {
 }
 
 class MobileNumberView extends StatefulWidget {
-  PageController pageController;
-  MobileNumberView(this.pageController);
+  final PageController pageController;
+  final UserContext userContext;
+  MobileNumberView(this.pageController, this.userContext);
   @override
   _MobileNumberViewState createState() => _MobileNumberViewState();
 }
 
 class _MobileNumberViewState extends State<MobileNumberView> {
+  TextEditingController _eventAttendee = new TextEditingController();
+  ApiHandlers apiHandlers = new ApiHandlers();
+  EventContext eventContext;
+  @override
+  void initState() {
+    super.initState();
+    eventContext = Provider.of<EventContext>(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -195,6 +283,9 @@ class _MobileNumberViewState extends State<MobileNumberView> {
             Padding(
               padding: EdgeInsets.only(bottom: 34, top: 8),
               child: TextField(
+                controller: _eventAttendee,
+                style: TextStyle(color: Colors.white, fontSize: 18),
+                cursorColor: Color(0xFF080F2F),
                 keyboardType: TextInputType.number,
                 inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
                 decoration: InputDecoration(
@@ -217,12 +308,41 @@ class _MobileNumberViewState extends State<MobileNumberView> {
                   minWidth: 150,
                   elevation: 0.0,
                   height: 42,
-                  onPressed: () {
-                    widget.pageController.animateToPage(
-                      2,
-                      duration: Duration(milliseconds: 1200),
-                      curve: Curves.fastLinearToSlowEaseIn,
-                    );
+                  onPressed: () async {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return Center(
+                            child: CircularProgressIndicator(
+                              valueColor: new AlwaysStoppedAnimation<Color>(
+                                Color(0xFF080F2F),
+                              ),
+                            ),
+                          );
+                        });
+                    var result = await apiHandlers.checkIfNumberExists(
+                        prefs.getString("EventId"), _eventAttendee.text);
+                    Navigator.pop(context);
+                    print(result);
+                    if (result != 0) {
+                      eventContext.setEvent(Event.fromJSON(result));
+                      widget.pageController.animateToPage(
+                        2,
+                        duration: Duration(milliseconds: 1200),
+                        curve: Curves.fastLinearToSlowEaseIn,
+                      );
+                    } else {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: Text("Cannot Login"),
+                              content: Text(
+                                "You are Not Registered for this Event, Please contact adminsitator",
+                              ),
+                            );
+                          });
+                    }
                   },
                   color: Color(0xFF2E375C),
                   shape: StadiumBorder(),

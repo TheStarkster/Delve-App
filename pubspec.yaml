@@ -11,6 +11,12 @@ dependencies:
     sdk: flutter
   cuberto_bottom_bar: ^1.1.1
   cupertino_icons: ^0.1.2
+  get_it: ^4.0.2
+  shared_preferences: ^0.5.8
+  flutter_cache_manager: ^1.4.1
+  provider: ^4.3.1
+  cached_network_image: ^2.2.0+1
+  url_launcher: ^5.5.0
 
 dev_dependencies:
   flutter_test:
@@ -19,24 +25,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/images/background.jpg
-    - assets/images/eventImage.jpg
-    - assets/images/bombay.png
-    - assets/images/logo.png
-    - assets/images/user.png
-    - assets/images/tickets.png
-    - assets/images/about_city.png
-    - assets/images/contacts.png
-    - assets/images/query.png
-    - assets/images/transfer.png
-    - assets/images/agendas.png
-    - assets/images/download_icon.png
-    - assets/images/gateway.jpg
-    - assets/images/chatr.jpg
-    - assets/images/chatr.jpg
-    - assets/images/caves.png
-    - assets/images/contact1.png
-    - assets/images/contact2.png
+    - assets/images/
 
   fonts:
     - family: Raleway-Light

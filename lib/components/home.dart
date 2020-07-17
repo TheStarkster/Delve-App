@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cuberto_bottom_bar/cuberto_bottom_bar.dart';
 import 'package:delve_app/components/options/aboutCity.dart';
 import 'package:delve_app/components/options/agendas.dart';
@@ -6,9 +7,13 @@ import 'package:delve_app/components/options/queries.dart';
 import 'package:delve_app/components/options/tickets&profile.dart';
 import 'package:delve_app/components/options/transfer.dart';
 import 'package:delve_app/components/sub-components/agendaCard.dart';
+import 'package:delve_app/providers/event.dart';
+import 'package:delve_app/providers/user.dart';
 import 'package:delve_app/utils/SizeConfig.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -129,6 +134,21 @@ class HomeTab extends StatefulWidget {
 }
 
 class _HomeTabState extends State<HomeTab> {
+  UserContext userContext;
+  EventContext eventContext;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    userContext = Provider.of<UserContext>(context);
+    eventContext = Provider.of<EventContext>(context);
+  }
+  _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -175,13 +195,30 @@ class _HomeTabState extends State<HomeTab> {
                         child: Container(
                           width: MediaQuery.of(context).size.width,
                           height: 180,
+                          child: CachedNetworkImage(
+                            imageUrl: eventContext.event.eventImage,
+                            imageBuilder: (context, imageProvider) => Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                image: DecorationImage(
+                                  image: imageProvider, fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                            placeholder: (context, url) => Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: 180,
+                                child: Center(child:  CircularProgressIndicator(
+                                  valueColor: new AlwaysStoppedAnimation<Color>(
+                                    Color(0xFF080F2F),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.transparent,
                             borderRadius: BorderRadius.circular(12),
-                            image: DecorationImage(
-                                image:
-                                    AssetImage('assets/images/eventImage.jpg'),
-                                fit: BoxFit.fill),
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.black54,
@@ -212,29 +249,32 @@ class _HomeTabState extends State<HomeTab> {
                   ),
                 ),
                 Text(
-                  "Hotel Holiday Inn, Andheri East, Mumbai",
+                  eventContext.event.location["name"],
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 21,
                     fontFamily: 'Raleway-Medium',
                   ),
                 ),
-                Container(
-                  padding: EdgeInsets.only(top: 12),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Icon(Icons.location_on, color: Colors.black45),
-                      Text(
-                        "Tap To See Location",
-                        style: TextStyle(color: Colors.black45),
-                      )
-                    ],
+                InkWell(
+                  onTap: _launchURL(eventContext.event.location["url"]),
+                  child: Container(
+                    padding: EdgeInsets.only(top: 12),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Icon(Icons.location_on, color: Colors.black45),
+                        Text(
+                          "Tap To See Location",
+                          style: TextStyle(color: Colors.black45),
+                        )
+                      ],
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                    ),
                   ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                )
+                ),
               ],
             ),
           ),
