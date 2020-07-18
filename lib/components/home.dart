@@ -598,29 +598,142 @@ class RecentTab extends StatefulWidget {
 }
 
 class _RecentTabState extends State<RecentTab> {
+  UserContext userContext;
+  EventContext eventContext;
+  List<DateTime> agendaDates;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    userContext = Provider.of<UserContext>(context);
+    eventContext = Provider.of<EventContext>(context);
+    agendaDates = eventContext.event.agendas
+        .map((a) => DateTime.parse(a["startDate"]))
+        .toSet()
+        .toList();
+  }
+  String getDay(int dayInt){
+    switch (dayInt) {
+      case 1:
+        return "Mon";
+        break;
+      case 2:
+        return "Tue";
+        break;
+      case 3:
+        return "Wed";
+        break;
+      case 4:
+        return "Thu";
+        break;
+      case 5:
+        return "Fri";
+        break;
+      case 6:
+        return "Sat";
+        break;
+      case 7:
+        return "Sun";
+        break;
+      default:
+    }
+  }
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
-      child: ListView(
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.all(24),
-            child: Text(
-              "Recents",
-              style: TextStyle(
-                color: Colors.black87,
-                fontSize: 21,
-                fontFamily: 'Raleway-Regular',
+    return Scaffold(
+      body: MediaQuery.removePadding(
+        removeTop: true,
+        context: context,
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              flex: 2,
+              child: Padding(
+                padding: EdgeInsets.only(top: 24),
+                child: Scaffold(
+                  body: DefaultTabController(
+                    length: agendaDates.length,
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          constraints: BoxConstraints.expand(height: 70),
+                          child: TabBar(
+                            indicatorWeight: 6,
+                            indicatorSize: TabBarIndicatorSize.label,
+                            indicatorPadding:
+                                EdgeInsets.symmetric(horizontal: 10),
+                            indicator: UnderlineTabIndicator(
+                              borderSide: BorderSide(
+                                color: Colors.lightBlueAccent,
+                                width: 4,
+                              ),
+                              insets: EdgeInsets.symmetric(
+                                horizontal: 20,
+                              ),
+                            ),
+                            isScrollable: true,
+                            tabs: List.generate(agendaDates.length, (index) {
+                              return Tab(
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  constraints:
+                                      BoxConstraints.expand(width: 100),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(50),
+                                    color: Colors.black12,
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text(
+                                        agendaDates[index].day.toString(),
+                                        style: TextStyle(
+                                          fontSize: 21,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(left: 4),
+                                        child: Text(
+                                          getDay(agendaDates[index].weekday),
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.black,
+                                            fontFamily: 'Raleway-Light',
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }),
+                          ),
+                        ),
+                        Expanded(
+                          child: Container(
+                            child: TabBarView(
+                              children: List.generate(agendaDates.length, (index) {
+                                List<Map<String,dynamic>> agendas = eventContext.event.agendas.where((e) => DateTime.parse(e["startDate"]) == agendaDates[index]).map<Map<String,dynamic>>((e) => e).toList();
+                                return Day(
+                                  agendas,
+                                  true
+                                );
+                              }),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ),
-          ),
-          AgendaCard(),
-        ],
+          ],
+        ),
       ),
     );
   }
+
 }
 //Recent tab Ends Here.....
 

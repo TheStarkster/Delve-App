@@ -14,6 +14,7 @@ class _AboutCityState extends State<AboutCity> {
   UserContext userContext;
   EventContext eventContext;
   Map<String, dynamic> location;
+  
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -21,6 +22,7 @@ class _AboutCityState extends State<AboutCity> {
     eventContext = Provider.of<EventContext>(context);
     location = eventContext.event.location;
   }
+
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);

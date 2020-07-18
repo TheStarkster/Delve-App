@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-
 class AgendaCard extends StatelessWidget {
   final String agendaName,remarks,from,to,venue;
-  AgendaCard({this.agendaName,this.remarks,this.from,this.to,this.venue});
+  final bool isLapsed,isInExpired;
+  AgendaCard({this.agendaName,this.remarks,this.from,this.to,this.venue,this.isLapsed,this.isInExpired=false});
 
   String calculateDiff(String s1,String s2){
     int time1 = int.parse(int.parse(s1.split(":")[0]) > 12 ? (int.parse(s1.split(":")[0]) - 12).toString() +  s1.split(":")[1] : s1.split(":")[0] +  s1.split(":")[1]);
@@ -20,7 +20,9 @@ class AgendaCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(bottom: 38, left: 16, right: 16),
-      child: Container(
+      child: Opacity(
+        opacity: isLapsed ? isInExpired ? 1 : 0.4 : 1,
+        child: Container(
         padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(18),
@@ -157,6 +159,7 @@ class AgendaCard extends StatelessWidget {
           ],
         ),
       ),
-    );
+      ), 
+      );
   }
 }

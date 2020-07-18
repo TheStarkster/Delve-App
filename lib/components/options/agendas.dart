@@ -152,7 +152,6 @@ class _AgendaState extends State<Agenda> with SingleTickerProviderStateMixin {
                                         style: TextStyle(
                                           fontSize: 21,
                                           color: Colors.black,
-                                          fontFamily: 'Raleway-Medium',
                                         ),
                                       ),
                                       Padding(
@@ -179,7 +178,8 @@ class _AgendaState extends State<Agenda> with SingleTickerProviderStateMixin {
                               children: List.generate(agendaDates.length, (index) {
                                 List<Map<String,dynamic>> agendas = eventContext.event.agendas.where((e) => DateTime.parse(e["startDate"]) == agendaDates[index]).map<Map<String,dynamic>>((e) => e).toList();
                                 return Day(
-                                  agendas
+                                  agendas,
+                                  false
                                 );
                               }),
                             ),
@@ -199,8 +199,9 @@ class _AgendaState extends State<Agenda> with SingleTickerProviderStateMixin {
 }
 
 class Day extends StatefulWidget {
+  final bool onlyRenderExpired;
   final List<Map<String, dynamic>> agendas;
-  Day(this.agendas);
+  Day(this.agendas,this.onlyRenderExpired);
   @override
   _DayState createState() => _DayState();
 }
@@ -227,12 +228,28 @@ class _DayState extends State<Day> {
             ),
           ),
           Column(children: List.generate(widget.agendas.length, (index) {
+              var time = DateTime.utc(int.parse(widget.agendas[index]["startDate"].split("-")[0]),int.parse(widget.agendas[index]["startDate"].split("-")[1]),int.parse(widget.agendas[index]["startDate"].split("-")[2]),int.parse(widget.agendas[index]["startTime"].split(":")[0]),int.parse(widget.agendas[index]["startTime"].split(":")[1]),0);
+              if(widget.onlyRenderExpired){
+                return time.isBefore(DateTime.now()) ?
+                AgendaCard(
+                agendaName: widget.agendas[index]["name"],
+                from: widget.agendas[index]["startTime"],
+                to: widget.agendas[index]["endTime"],
+                remarks: widget.agendas[index]["remarks"],
+                venue: widget.agendas[index]["venue"],
+                isLapsed: time.isBefore(DateTime.now()),
+                isInExpired: true,
+              )
+              :
+              Container();
+              }
               return AgendaCard(
                 agendaName: widget.agendas[index]["name"],
                 from: widget.agendas[index]["startTime"],
                 to: widget.agendas[index]["endTime"],
                 remarks: widget.agendas[index]["remarks"],
                 venue: widget.agendas[index]["venue"],
+                isLapsed: time.isBefore(DateTime.now())
               );
             }),
           )
