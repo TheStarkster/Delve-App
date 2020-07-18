@@ -1,12 +1,57 @@
+import 'package:delve_app/providers/event.dart';
+import 'package:delve_app/providers/user.dart';
 import 'package:flutter/material.dart';
 import 'package:delve_app/utils/SizeConfig.dart';
-
+import 'package:intent/action.dart' as IntentActions;
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:intent/intent.dart' as IntentService;
 class Transfer extends StatefulWidget {
   @override
   _TransferState createState() => _TransferState();
 }
 
 class _TransferState extends State<Transfer> {
+  UserContext userContext;
+  EventContext eventContext;
+  List<DateTime> transfersDates;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    userContext = Provider.of<UserContext>(context);
+    eventContext = Provider.of<EventContext>(context);
+    transfersDates = eventContext.event.transfers
+        .map((a) => DateTime.parse(a["transferDate"]))
+        .toSet()
+        .toList();
+  }
+   String getDay(int dayInt){
+    switch (dayInt) {
+      case 1:
+        return "Mon";
+        break;
+      case 2:
+        return "Tue";
+        break;
+      case 3:
+        return "Wed";
+        break;
+      case 4:
+        return "Thu";
+        break;
+      case 5:
+        return "Fri";
+        break;
+      case 6:
+        return "Sat";
+        break;
+      case 7:
+        return "Sun";
+        break;
+      default:
+    }
+  }
+ 
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -43,7 +88,7 @@ class _TransferState extends State<Transfer> {
         ),
       ),
       body: DefaultTabController(
-        length: 4,
+        length: transfersDates.length,
         child: Column(
           children: <Widget>[
             Container(
@@ -62,8 +107,8 @@ class _TransferState extends State<Transfer> {
                     ),
                   ),
                   isScrollable: true,
-                  tabs: [
-                    Tab(
+                  tabs: List.generate(transfersDates.length, (index){
+                    return Tab(
                       child: Container(
                         alignment: Alignment.center,
                         constraints: BoxConstraints.expand(width: 100),
@@ -75,7 +120,7 @@ class _TransferState extends State<Transfer> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             Text(
-                              "12",
+                              transfersDates[index].day.toString(),
                               style: TextStyle(
                                 fontSize: 21,
                                 color: Colors.black,
@@ -85,7 +130,7 @@ class _TransferState extends State<Transfer> {
                             Padding(
                               padding: EdgeInsets.only(left: 4),
                               child: Text(
-                                "Mon",
+                                getDay(transfersDates[index].weekday),
                                 style: TextStyle(
                                   fontSize: 16,
                                   color: Colors.black,
@@ -96,134 +141,20 @@ class _TransferState extends State<Transfer> {
                           ],
                         ),
                       ),
-                    ),
-                    Tab(
-                      child: Container(
-                        alignment: Alignment.center,
-                        constraints: BoxConstraints.expand(width: 100),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          color: Colors.black12,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              "13",
-                              style: TextStyle(
-                                fontSize: 21,
-                                color: Colors.black,
-                                fontFamily: 'Raleway-Medium',
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(left: 4),
-                              child: Text(
-                                "Tue",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.black,
-                                  fontFamily: 'Raleway-Light',
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Tab(
-                      child: Container(
-                        alignment: Alignment.center,
-                        constraints: BoxConstraints.expand(width: 100),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          color: Colors.black12,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              "14",
-                              style: TextStyle(
-                                fontSize: 21,
-                                color: Colors.black,
-                                fontFamily: 'Raleway-Medium',
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(left: 4),
-                              child: Text(
-                                "Wed",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.black,
-                                  fontFamily: 'Raleway-Light',
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Tab(
-                      child: Container(
-                        alignment: Alignment.center,
-                        constraints: BoxConstraints.expand(width: 100),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          color: Colors.black12,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              "15",
-                              style: TextStyle(
-                                fontSize: 21,
-                                color: Colors.black,
-                                fontFamily: 'Raleway-Medium',
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(left: 4),
-                              child: Text(
-                                "Thu",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.black,
-                                  fontFamily: 'Raleway-Light',
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ]),
+                    );
+                  }),
+                ),
             ),
             Expanded(
               child: Container(
-                child: TabBarView(children: [
-                  Container(
+                child: TabBarView(
+                  children: List.generate(transfersDates.length, (index) {
+                    List<Map<String,dynamic>> transfers = eventContext.event.transfers.where((e) => DateTime.parse(e["transferDate"]) == transfersDates[index]).map<Map<String,dynamic>>((e) => e).toList();
+                    return Container(
+                    padding: EdgeInsets.only(top:24),
                     child: ListView(
-                      children: <Widget>[
-                        Padding(
-                          padding:
-                              EdgeInsets.only(top: 32, bottom: 12, left: 16),
-                          child: Row(
-                            children: <Widget>[
-                              Text(
-                                "Pickups",
-                                style: TextStyle(
-                                  color: Colors.black45,
-                                  fontFamily: 'Raleway-Regular',
-                                  fontSize: 24,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
+                      children: List.generate(transfers.length, (index2){
+                        return Padding(
                           padding:
                               EdgeInsets.only(bottom: 18, left: 12, right: 12),
                           child: Container(
@@ -243,7 +174,7 @@ class _TransferState extends State<Transfer> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(
-                                  "To Holiday Inn Anderi",
+                                  transfers[index2]["name"],
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontFamily: 'Raleway-Medium',
@@ -253,7 +184,7 @@ class _TransferState extends State<Transfer> {
                                 Padding(
                                   padding: EdgeInsets.only(top: 4),
                                   child: Text(
-                                    "From XYZ Airport Terminal II",
+                                    "From " + transfers[index2]["origin"],
                                     style: TextStyle(
                                       color: Colors.black54,
                                       fontFamily: 'Raleway-Medium',
@@ -270,7 +201,7 @@ class _TransferState extends State<Transfer> {
                                   ),
                                 ),
                                 Text(
-                                  "BUS - MH 007FXX",
+                                  transfers[index2]["vehicleNumber"] != null ? transfers[index2]["mode"] + " - " + transfers[index2]["vehicleNumber"] : transfers[index2]["mode"],
                                   style: TextStyle(
                                     color: Colors.black87,
                                     fontFamily: 'Raleway-Regular',
@@ -280,7 +211,7 @@ class _TransferState extends State<Transfer> {
                                 Padding(
                                   padding: EdgeInsets.only(top: 3, bottom: 8),
                                   child: Text(
-                                    "Driver Name",
+                                    transfers[index2]["driverName"],
                                     style: TextStyle(
                                       color: Colors.black87,
                                       fontFamily: 'Raleway-Regular',
@@ -291,31 +222,37 @@ class _TransferState extends State<Transfer> {
                                 Row(
                                   children: <Widget>[
                                     Text(
-                                      "995546XXXX",
+                                      transfers[index2]["driverPhone"],
                                       style: TextStyle(
                                         color: Colors.black87,
                                         fontSize: 16,
                                       ),
                                     ),
-                                    Padding(
-                                      padding: EdgeInsets.only(left: 24),
-                                      child: Container(
-                                        padding: EdgeInsets.only(
-                                            top: 4,
-                                            bottom: 4,
-                                            left: 14,
-                                            right: 14),
-                                        child: Text(
-                                          "Call",
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 16,
-                                              fontFamily: 'Raleway-Regular'),
-                                        ),
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(50),
-                                          color: Colors.black12,
+                                    InkWell(
+                                      onTap: () => IntentService.Intent()
+                                      ..setAction(IntentActions.Action.ACTION_DIAL)
+                                      ..setData(Uri(scheme: 'tel', path: transfers[index2]["driverPhone"]))
+                                      ..startActivity().catchError((e) => print(e)),
+                                      child: Padding(
+                                        padding: EdgeInsets.only(left: 24),
+                                        child: Container(
+                                          padding: EdgeInsets.only(
+                                              top: 4,
+                                              bottom: 4,
+                                              left: 14,
+                                              right: 14),
+                                          child: Text(
+                                            "Call",
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 16,
+                                                fontFamily: 'Raleway-Regular'),
+                                          ),
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(50),
+                                            color: Colors.black12,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -327,19 +264,20 @@ class _TransferState extends State<Transfer> {
                                 Row(
                                   children: <Widget>[
                                     Expanded(
-                                      flex: 1,
+                                      flex: 3,
                                       child: Text(
-                                        "Arrival",
+                                        "Time",
                                         style: TextStyle(
                                           fontSize: 16,
-                                          fontWeight: FontWeight.w600,
+                                          fontWeight: FontWeight.w400,
+                                          color: Colors.black54
                                         ),
                                       ),
                                     ),
                                     Expanded(
-                                      flex: 2,
+                                      flex: 3,
                                       child: Text(
-                                        "10:30 am",
+                                        DateFormat.jm().format(DateTime.parse(transfers[index2]["transferDate"])),
                                         style: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w600,
@@ -351,19 +289,45 @@ class _TransferState extends State<Transfer> {
                                 Row(
                                   children: <Widget>[
                                     Expanded(
-                                      flex: 1,
+                                      flex: 3,
                                       child: Text(
-                                        "Departure",
+                                        "Journey Time",
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w400,
+                                          color: Colors.black54
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 3,
+                                      child: Text(
+                                        transfers[index2]["journeyTime"].toString() + " Hour(s)",
                                         style: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w600,
                                         ),
                                       ),
                                     ),
+                                  ],
+                                ),
+                                Row(
+                                  children: <Widget>[
                                     Expanded(
-                                      flex: 2,
+                                      flex: 3,
                                       child: Text(
-                                        "12:30 pm",
+                                        "Distance",
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w400,
+                                          color: Colors.black54
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 3,
+                                      child: Text(
+                                       transfers[index2]["distance"].toString() + " Km(s)",
                                         style: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w600,
@@ -375,14 +339,12 @@ class _TransferState extends State<Transfer> {
                               ],
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(),
-                  Container(),
-                  Container(),
-                ]),
+                        );
+                      }),
+                      ),
+                    );
+                  }),
+                ),
               ),
             )
           ],

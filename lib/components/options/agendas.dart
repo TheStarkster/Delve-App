@@ -1,5 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:delve_app/components/sub-components/agendaCard.dart';
+import 'package:delve_app/providers/event.dart';
+import 'package:delve_app/providers/user.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Agenda extends StatefulWidget {
   @override
@@ -7,6 +11,45 @@ class Agenda extends StatefulWidget {
 }
 
 class _AgendaState extends State<Agenda> with SingleTickerProviderStateMixin {
+  UserContext userContext;
+  EventContext eventContext;
+  List<DateTime> agendaDates;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    userContext = Provider.of<UserContext>(context);
+    eventContext = Provider.of<EventContext>(context);
+    agendaDates = eventContext.event.agendas
+        .map((a) => DateTime.parse(a["startDate"]))
+        .toSet()
+        .toList();
+  }
+  String getDay(int dayInt){
+    switch (dayInt) {
+      case 1:
+        return "Mon";
+        break;
+      case 2:
+        return "Tue";
+        break;
+      case 3:
+        return "Wed";
+        break;
+      case 4:
+        return "Thu";
+        break;
+      case 5:
+        return "Fri";
+        break;
+      case 6:
+        return "Sat";
+        break;
+      case 7:
+        return "Sun";
+        break;
+      default:
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,24 +64,46 @@ class _AgendaState extends State<Agenda> with SingleTickerProviderStateMixin {
                 tag: 'eventHero',
                 child: Container(
                   width: MediaQuery.of(context).size.width,
-                  height: 250,
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black38,
-                        blurRadius: 12,
-                        offset: Offset(0, 12),
+                  height: 180,
+                  child: CachedNetworkImage(
+                    imageUrl: eventContext.event.eventImage,
+                    imageBuilder: (context, imageProvider) => Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(32),
+                          bottomRight: Radius.circular(32),
+                        ),
+                        image: DecorationImage(
+                          image: imageProvider,
+                          fit: BoxFit.cover,
+                        ),
                       ),
-                    ],
-                    color: Colors.green,
+                    ),
+                    placeholder: (context, url) => Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 250,
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          valueColor: new AlwaysStoppedAnimation<Color>(
+                            Color(0xFF080F2F),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.transparent,
                     borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(32),
                       bottomRight: Radius.circular(32),
                     ),
-                    image: DecorationImage(
-                      image: AssetImage('assets/images/eventImage.jpg'),
-                      fit: BoxFit.cover,
-                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black54,
+                        blurRadius: 8,
+                        offset: Offset(0, 8),
+                      )
+                    ],
                   ),
                 ),
               ),
@@ -49,187 +114,75 @@ class _AgendaState extends State<Agenda> with SingleTickerProviderStateMixin {
                 padding: EdgeInsets.only(top: 24),
                 child: Scaffold(
                   body: DefaultTabController(
-                    length: 4,
+                    length: agendaDates.length,
                     child: Column(
                       children: <Widget>[
                         Container(
                           constraints: BoxConstraints.expand(height: 70),
                           child: TabBar(
-                              indicatorWeight: 6,
-                              indicatorSize: TabBarIndicatorSize.label,
-                              indicatorPadding:
-                                  EdgeInsets.symmetric(horizontal: 10),
-                              indicator: UnderlineTabIndicator(
-                                borderSide: BorderSide(
-                                  color: Colors.lightBlueAccent,
-                                  width: 4,
-                                ),
-                                insets: EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                ),
+                            indicatorWeight: 6,
+                            indicatorSize: TabBarIndicatorSize.label,
+                            indicatorPadding:
+                                EdgeInsets.symmetric(horizontal: 10),
+                            indicator: UnderlineTabIndicator(
+                              borderSide: BorderSide(
+                                color: Colors.lightBlueAccent,
+                                width: 4,
                               ),
-                              isScrollable: true,
-                              tabs: [
-                                Tab(
-                                  child: Container(
-                                    alignment: Alignment.center,
-                                    constraints:
-                                        BoxConstraints.expand(width: 100),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(50),
-                                      color: Colors.black12,
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        Text(
-                                          "12",
+                              insets: EdgeInsets.symmetric(
+                                horizontal: 20,
+                              ),
+                            ),
+                            isScrollable: true,
+                            tabs: List.generate(agendaDates.length, (index) {
+                              return Tab(
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  constraints:
+                                      BoxConstraints.expand(width: 100),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(50),
+                                    color: Colors.black12,
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text(
+                                        agendaDates[index].day.toString(),
+                                        style: TextStyle(
+                                          fontSize: 21,
+                                          color: Colors.black,
+                                          fontFamily: 'Raleway-Medium',
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(left: 4),
+                                        child: Text(
+                                          getDay(agendaDates[index].weekday),
                                           style: TextStyle(
-                                            fontSize: 21,
+                                            fontSize: 16,
                                             color: Colors.black,
-                                            fontFamily: 'Raleway-Medium',
+                                            fontFamily: 'Raleway-Light',
                                           ),
                                         ),
-                                        Padding(
-                                          padding: EdgeInsets.only(left: 4),
-                                          child: Text(
-                                            "Mon",
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              color: Colors.black,
-                                              fontFamily: 'Raleway-Light',
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                Tab(
-                                  child: Container(
-                                    alignment: Alignment.center,
-                                    constraints:
-                                        BoxConstraints.expand(width: 100),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(50),
-                                      color: Colors.black12,
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        Text(
-                                          "13",
-                                          style: TextStyle(
-                                            fontSize: 21,
-                                            color: Colors.black,
-                                            fontFamily: 'Raleway-Medium',
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(left: 4),
-                                          child: Text(
-                                            "Tue",
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              color: Colors.black,
-                                              fontFamily: 'Raleway-Light',
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Tab(
-                                  child: Container(
-                                    alignment: Alignment.center,
-                                    constraints:
-                                        BoxConstraints.expand(width: 100),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(50),
-                                      color: Colors.black12,
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        Text(
-                                          "14",
-                                          style: TextStyle(
-                                            fontSize: 21,
-                                            color: Colors.black,
-                                            fontFamily: 'Raleway-Medium',
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(left: 4),
-                                          child: Text(
-                                            "Wed",
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              color: Colors.black,
-                                              fontFamily: 'Raleway-Light',
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Tab(
-                                  child: Container(
-                                    alignment: Alignment.center,
-                                    constraints:
-                                        BoxConstraints.expand(width: 100),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(50),
-                                      color: Colors.black12,
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        Text(
-                                          "15",
-                                          style: TextStyle(
-                                            fontSize: 21,
-                                            color: Colors.black,
-                                            fontFamily: 'Raleway-Medium',
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(left: 4),
-                                          child: Text(
-                                            "Thu",
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              color: Colors.black,
-                                              fontFamily: 'Raleway-Light',
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ]),
+                              );
+                            }),
+                          ),
                         ),
                         Expanded(
                           child: Container(
-                            child: TabBarView(children: [
-                              Day(),
-                              Container(
-                                child: Text("Articles Body"),
-                              ),
-                              Container(
-                                child: Text("User Body"),
-                              ),
-                              Container(
-                                child: Text("User Body"),
-                              ),
-                            ]),
+                            child: TabBarView(
+                              children: List.generate(agendaDates.length, (index) {
+                                List<Map<String,dynamic>> agendas = eventContext.event.agendas.where((e) => DateTime.parse(e["startDate"]) == agendaDates[index]).map<Map<String,dynamic>>((e) => e).toList();
+                                return Day(
+                                  agendas
+                                );
+                              }),
+                            ),
                           ),
                         )
                       ],
@@ -246,6 +199,8 @@ class _AgendaState extends State<Agenda> with SingleTickerProviderStateMixin {
 }
 
 class Day extends StatefulWidget {
+  final List<Map<String, dynamic>> agendas;
+  Day(this.agendas);
   @override
   _DayState createState() => _DayState();
 }
@@ -271,9 +226,16 @@ class _DayState extends State<Day> {
               ),
             ),
           ),
-          AgendaCard(),
-          AgendaCard(),
-          AgendaCard(),
+          Column(children: List.generate(widget.agendas.length, (index) {
+              return AgendaCard(
+                agendaName: widget.agendas[index]["name"],
+                from: widget.agendas[index]["startTime"],
+                to: widget.agendas[index]["endTime"],
+                remarks: widget.agendas[index]["remarks"],
+                venue: widget.agendas[index]["venue"],
+              );
+            }),
+          )
         ],
       ),
     );

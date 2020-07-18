@@ -6,8 +6,6 @@ class UserContext extends ChangeNotifier{
   User get user => _user;
   void setUser(User user){
     _user = user;
-    print("_user.eventId");
-    print(_user.eventId);
     notifyListeners();
   }
 }

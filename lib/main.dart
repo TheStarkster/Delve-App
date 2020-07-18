@@ -40,7 +40,8 @@ class DelveApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: prefs.getBool("isLoggedIn") == null
+      home:
+       prefs.getBool("isLoggedIn") == null
           ? LoginAndVerify()
           : prefs.getBool("isLoggedIn") ? Home() : LoginAndVerify(),
     );
@@ -120,7 +121,12 @@ class _EventCodeViewState extends State<EventCodeView> {
   TextEditingController _eventCode = new TextEditingController();
   ApiConstants get apiconstants => GetIt.I<ApiConstants>();
   ApiHandlers apiHandlers = new ApiHandlers();
-
+  EventContext eventContext;
+  @override
+  void initState() {
+    super.initState();
+    eventContext = Provider.of<EventContext>(context,listen: false);
+  }
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -193,8 +199,8 @@ class _EventCodeViewState extends State<EventCodeView> {
                     var result = await apiHandlers.getEvent(_eventCode.text);
                     Navigator.pop(context);
                     if (result != 0) {
-                      prefs.setString("EventId", _eventCode.text);
-                      widget.userContext.setUser(User.fromJSON(result));
+                      await prefs.setString("EventId", _eventCode.text);
+                      eventContext.setEvent(Event.fromJSON(result));
                       widget.pageController.animateToPage(
                         1,
                         duration: Duration(milliseconds: 1200),
@@ -244,12 +250,6 @@ class MobileNumberView extends StatefulWidget {
 class _MobileNumberViewState extends State<MobileNumberView> {
   TextEditingController _eventAttendee = new TextEditingController();
   ApiHandlers apiHandlers = new ApiHandlers();
-  EventContext eventContext;
-  @override
-  void initState() {
-    super.initState();
-    eventContext = Provider.of<EventContext>(context);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -323,9 +323,9 @@ class _MobileNumberViewState extends State<MobileNumberView> {
                     var result = await apiHandlers.checkIfNumberExists(
                         prefs.getString("EventId"), _eventAttendee.text);
                     Navigator.pop(context);
-                    print(result);
                     if (result != 0) {
-                      eventContext.setEvent(Event.fromJSON(result));
+                      widget.userContext.setUser(User.fromJSON(result));
+                      await prefs.setString("phone", _eventAttendee.text);
                       widget.pageController.animateToPage(
                         2,
                         duration: Duration(milliseconds: 1200),
@@ -425,12 +425,13 @@ class _OTPViewState extends State<OTPView> {
                   elevation: 0.0,
                   height: 42,
                   onPressed: () {
-                    Navigator.push(
+                    prefs.setBool("isLoggedIn",true)
+                    .then((value) => Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => Home(),
                       ),
-                    );
+                    ),);
                   },
                   color: Color(0xFF2E375C),
                   shape: StadiumBorder(),

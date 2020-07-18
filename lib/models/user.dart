@@ -1,10 +1,10 @@
 class User {
   int _id;
-  int _name;
+  String _name;
   String _phone;
   String _email;
   String _location;
-  String _eventId;
+  int _eventId;
   String _aticket;
   String _dticket;
   String _aTicketFrom;
@@ -13,11 +13,11 @@ class User {
   String _dTicketTo;
 
   int get id => _id;
-  int get name => _name;
+  String get name => _name;
   String get phone => _phone;
   String get email => _email;
   String get location => _location;
-  String get eventId => _eventId;
+  int get eventId => _eventId;
   String get aticket => _aticket;
   String get dticket => _dticket;
   String get aTicketFrom => _aTicketFrom;

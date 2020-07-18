@@ -1,19 +1,19 @@
 
 class Event {
   int _id;
-  int _name;
+  String _name;
   DateTime _liveFrom;
   DateTime _liveTo;
   int _customerId;
   String _plackCardImage;
   String _eventImage;
-  List<Map<String, dynamic>> _agendas;
-  List<Map<String, dynamic>> _transfers;
-  List<Map<String, dynamic>> _eventRepresentatives;
+  List<dynamic> _agendas;
+  List<dynamic> _transfers;
+  List<dynamic> _eventRepresentatives;
   Map<String, dynamic> _location;
 
   int get id => _id;
-  int get name => _name;
+  String get name => _name;
   DateTime get liveFrom => _liveFrom;
   DateTime get liveTo => _liveTo;
   int get customerId => _customerId;
@@ -27,8 +27,8 @@ class Event {
   Event.fromJSON(Map<String, dynamic> json){
     _id = json["id"];
     _name = json["name"];
-    _liveFrom = DateTime(json["liveFrom"]);
-    _liveTo = DateTime(json["liveTo"]);
+    _liveFrom = DateTime.parse(json["liveFrom"]);
+    _liveTo = DateTime.parse(json["liveTo"]);
     _plackCardImage = json["plackCardImage"];
     _eventImage = json["eventImage"];
     _agendas = json["Agendas"];

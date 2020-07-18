@@ -7,9 +7,13 @@ import 'package:delve_app/components/options/queries.dart';
 import 'package:delve_app/components/options/tickets&profile.dart';
 import 'package:delve_app/components/options/transfer.dart';
 import 'package:delve_app/components/sub-components/agendaCard.dart';
+import 'package:delve_app/main.dart';
+import 'package:delve_app/models/event.dart';
+import 'package:delve_app/models/user.dart';
 import 'package:delve_app/providers/event.dart';
 import 'package:delve_app/providers/user.dart';
 import 'package:delve_app/utils/SizeConfig.dart';
+import 'package:delve_app/utils/repository/api/handlers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -25,9 +29,12 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   Color currentColor = Colors.deepPurple;
   Color inactiveColor = Colors.black;
   TabController tabBarController;
+  ApiHandlers apiHandlers = ApiHandlers();
   List<Tabs> tabs = new List();
+  bool isReady;
   @override
   void initState() {
+    isReady = false;
     super.initState();
     currentPage = 0;
     tabs.add(Tabs(Icons.home, "Home", Colors.orange));
@@ -36,6 +43,31 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         Tabs(Icons.notifications_active, "Notification", Colors.blueAccent));
     tabBarController =
         new TabController(initialIndex: currentPage, length: 3, vsync: this);
+  }
+
+  UserContext userContext;
+  EventContext eventContext;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    userContext = Provider.of<UserContext>(context);
+    eventContext = Provider.of<EventContext>(context);
+    if (!isReady) {
+      setContext().then((value) {
+        setState(() {
+          isReady = !isReady;
+        });
+      });
+    }
+  }
+
+  Future setContext() async {
+    var eventResult = await apiHandlers.getEvent(prefs.getString("EventId"));
+    eventContext.setEvent(Event.fromJSON(eventResult));
+    var userResult = await apiHandlers.checkIfNumberExists(
+        prefs.getString("EventId"), prefs.getString("phone"));
+    userContext.setUser(User.fromJSON(userResult));
   }
 
   @override
@@ -47,83 +79,85 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        elevation: 0.0,
-        backgroundColor: Colors.transparent,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(right: 12),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    CupertinoPageRoute(
-                      builder: (context) => ProfileTickets(),
+    return isReady
+        ? Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              elevation: 0.0,
+              backgroundColor: Colors.transparent,
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(right: 12),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                            builder: (context) => ProfileTickets(),
+                          ),
+                        );
+                      },
+                      child: Image.asset(
+                        'assets/images/user.png',
+                        width: 50,
+                      ),
                     ),
-                  );
-                },
-                child: Image.asset(
-                  'assets/images/user.png',
-                  width: 50,
-                ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        "Welcome,",
+                        style: TextStyle(
+                          color: Color(0xFFACACAC),
+                          fontFamily: 'Raleway-Medium',
+                          fontSize: 14,
+                        ),
+                      ),
+                      Text(
+                        userContext.user.name,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontFamily: 'Raleway-Regular',
+                          fontSize: 18,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            bottomNavigationBar: CubertoBottomBar(
+              inactiveIconColor: inactiveColor,
+              tabStyle: CubertoTabStyle.STYLE_FADED_BACKGROUND,
+              selectedTab: currentPage,
+              tabs: tabs
+                  .map((value) => TabData(
+                        iconData: value.icon,
+                        title: value.title,
+                        tabColor: value.color,
+                      ))
+                  .toList(),
+              onTabChangedListener: (position, title, color) {
+                setState(() {
+                  tabBarController.animateTo(position);
+                  currentPage = position;
+                });
+              },
+            ), //
+            body: TabBarView(
+              controller: tabBarController,
+              physics: NeverScrollableScrollPhysics(),
               children: <Widget>[
-                Text(
-                  "Welcome,",
-                  style: TextStyle(
-                    color: Color(0xFFACACAC),
-                    fontFamily: 'Raleway-Medium',
-                    fontSize: 14,
-                  ),
-                ),
-                Text(
-                  "Vinit Sonker",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontFamily: 'Raleway-Regular',
-                    fontSize: 18,
-                  ),
-                ),
+                HomeTab(),
+                RecentTab(),
+                NotificationTab(),
               ],
             ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: CubertoBottomBar(
-        inactiveIconColor: inactiveColor,
-        tabStyle: CubertoTabStyle.STYLE_FADED_BACKGROUND,
-        selectedTab: currentPage,
-        tabs: tabs
-            .map((value) => TabData(
-                  iconData: value.icon,
-                  title: value.title,
-                  tabColor: value.color,
-                ))
-            .toList(),
-        onTabChangedListener: (position, title, color) {
-          setState(() {
-            tabBarController.animateTo(position);
-            currentPage = position;
-          });
-        },
-      ), //
-      body: TabBarView(
-        controller: tabBarController,
-        physics: NeverScrollableScrollPhysics(),
-        children: <Widget>[
-          HomeTab(),
-          RecentTab(),
-          NotificationTab(),
-        ],
-      ),
-    );
+          )
+        : Container();
   }
 }
 
@@ -142,6 +176,7 @@ class _HomeTabState extends State<HomeTab> {
     userContext = Provider.of<UserContext>(context);
     eventContext = Provider.of<EventContext>(context);
   }
+
   _launchURL(String url) async {
     if (await canLaunch(url)) {
       await launch(url);
@@ -149,6 +184,7 @@ class _HomeTabState extends State<HomeTab> {
       throw 'Could not launch $url';
     }
   }
+
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -171,7 +207,7 @@ class _HomeTabState extends State<HomeTab> {
                   ),
                 ),
                 Text(
-                  "All Events",
+                  eventContext.event.name,
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 21,
@@ -201,14 +237,16 @@ class _HomeTabState extends State<HomeTab> {
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12),
                                 image: DecorationImage(
-                                  image: imageProvider, fit: BoxFit.cover,
+                                  image: imageProvider,
+                                  fit: BoxFit.cover,
                                 ),
                               ),
                             ),
                             placeholder: (context, url) => Container(
-                                width: MediaQuery.of(context).size.width,
-                                height: 180,
-                                child: Center(child:  CircularProgressIndicator(
+                              width: MediaQuery.of(context).size.width,
+                              height: 180,
+                              child: Center(
+                                child: CircularProgressIndicator(
                                   valueColor: new AlwaysStoppedAnimation<Color>(
                                     Color(0xFF080F2F),
                                   ),
@@ -257,7 +295,7 @@ class _HomeTabState extends State<HomeTab> {
                   ),
                 ),
                 InkWell(
-                  onTap: _launchURL(eventContext.event.location["url"]),
+                  onTap: () => _launchURL(eventContext.event.location["url"]),
                   child: Container(
                     padding: EdgeInsets.only(top: 12),
                     child: Row(
