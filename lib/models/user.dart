@@ -35,7 +35,7 @@ class User {
     _aticket = json["aticket"];
     _dticket = json["dticket"];
     _aTicketFrom = json["aTicketFrom"];
-    _dTicketTo = json["aTicketTo"];
+    _aTicketTo = json["aTicketTo"];
     _dTicketFrom = json["dTicketFrom"];
     _dTicketTo = json["dTicketTo"];
   }

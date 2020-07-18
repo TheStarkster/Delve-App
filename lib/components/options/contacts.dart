@@ -81,7 +81,10 @@ class _ContactState extends State<Contact> {
                   child: Row(
                     children: <Widget>[
                       Expanded(
-                        child: Icon(Icons.person),
+                        child: CircleAvatar(
+                          child: Center(child: Icon(Icons.person)),
+                          backgroundColor: Colors.blue,
+                        ),
                       ),
                       Expanded(
                         flex: 2,
@@ -99,8 +102,8 @@ class _ContactState extends State<Contact> {
                             Text(
                               eventRepresentatives[index]["Employees"]["phone"],
                               style: TextStyle(
-                                fontFamily: 'Raleway-Regular',
                                 color: Colors.black54,
+                                fontWeight: FontWeight.w600,
                                 fontSize: 18,
                               ),
                             ),

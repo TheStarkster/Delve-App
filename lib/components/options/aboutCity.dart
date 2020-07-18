@@ -1,5 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:delve_app/providers/event.dart';
+import 'package:delve_app/providers/user.dart';
 import 'package:flutter/material.dart';
 import 'package:delve_app/utils/SizeConfig.dart';
+import 'package:provider/provider.dart';
 
 class AboutCity extends StatefulWidget {
   @override
@@ -7,6 +11,16 @@ class AboutCity extends StatefulWidget {
 }
 
 class _AboutCityState extends State<AboutCity> {
+  UserContext userContext;
+  EventContext eventContext;
+  Map<String, dynamic> location;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    userContext = Provider.of<UserContext>(context);
+    eventContext = Provider.of<EventContext>(context);
+    location = eventContext.event.location;
+  }
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -45,7 +59,7 @@ class _AboutCityState extends State<AboutCity> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        "Mumbai",
+                        location["Cities"]["name"],
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w800,
@@ -60,7 +74,7 @@ class _AboutCityState extends State<AboutCity> {
                             color: Colors.white,
                           ),
                           Text(
-                            "India",
+                            location["Countries"]["name"],
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 28,
@@ -78,8 +92,8 @@ class _AboutCityState extends State<AboutCity> {
                 padding: EdgeInsets.only(left: 12, right: 12, top: 24),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
-                  children: <Widget>[
-                    Padding(
+                  children: List.generate(location["Cities"]["CityAttractions"].length, (index){
+                    return Padding(
                       padding: EdgeInsets.only(left: 8, right: 8, bottom: 24),
                       child: Container(
                         width: SizeConfig.blockSizeHorizontal * 68,
@@ -97,27 +111,38 @@ class _AboutCityState extends State<AboutCity> {
                                   width: 0.0,
                                   height: 0.0,
                                   child: OverflowBox(
-                                    maxWidth:
-                                        SizeConfig.blockSizeHorizontal * 42,
-                                    maxHeight:
-                                        SizeConfig.blockSizeVertical * 30,
-                                    child: Container(
+                                    maxWidth:SizeConfig.blockSizeHorizontal * 42,
+                                    maxHeight: SizeConfig.blockSizeVertical * 30,
+                                    child: CachedNetworkImage(
+                                    imageUrl: location["Cities"]["CityAttractions"][index]["image"],
+                                    imageBuilder: (context, imageProvider) => Container(
                                       decoration: BoxDecoration(
-                                        color: Colors.blue,
-                                        borderRadius: BorderRadius.circular(28),
-                                        image: DecorationImage(
-                                            image: AssetImage(
-                                                'assets/images/gateway.jpg'),
-                                            fit: BoxFit.cover),
+                                        borderRadius: BorderRadius.circular(12),
                                         boxShadow: [
                                           BoxShadow(
-                                            color: Colors.black38,
-                                            blurRadius: 14,
-                                            offset: Offset(4, 8),
-                                          ),
-                                        ],
+                                              color: Colors.black38,
+                                              blurRadius: 14,
+                                              offset: Offset(4, 8),
+                                            ),
+                                          ],
+                                        image: DecorationImage(
+                                          image: imageProvider,
+                                          fit: BoxFit.cover,
+                                        ),
                                       ),
                                     ),
+                                    placeholder: (context, url) => Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      height: 180,
+                                      child: Center(
+                                        child: CircularProgressIndicator(
+                                          valueColor: new AlwaysStoppedAnimation<Color>(
+                                            Color(0xFF080F2F),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                   ),
                                 ),
                               ),
@@ -125,7 +150,6 @@ class _AboutCityState extends State<AboutCity> {
                             Expanded(
                               flex: 2,
                               child: Container(
-                                // color: Colors.amber,
                                 padding: EdgeInsets.only(
                                     top: 24, left: 12, right: 12, bottom: 12),
                                 child: Column(
@@ -134,7 +158,7 @@ class _AboutCityState extends State<AboutCity> {
                                       child: Padding(
                                         padding: EdgeInsets.only(bottom: 12),
                                         child: Text(
-                                          "Gateway Of India",
+                                          location["Cities"]["CityAttractions"][index]["name"],
                                           style: TextStyle(
                                             color: Colors.black,
                                             fontFamily: 'Raleway-Medium',
@@ -147,7 +171,7 @@ class _AboutCityState extends State<AboutCity> {
                                     Expanded(
                                       flex: 3,
                                       child: Text(
-                                        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
+                                        location["Cities"]["CityAttractions"][index]["desc"],
                                         style: TextStyle(
                                           color: Colors.black54,
                                           fontFamily: 'Raleway-Regular',
@@ -163,93 +187,8 @@ class _AboutCityState extends State<AboutCity> {
                           ],
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 8, right: 8, bottom: 24),
-                      child: Container(
-                        width: SizeConfig.blockSizeHorizontal * 68,
-                        height: SizeConfig.blockSizeVertical * 34,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(28),
-                          color: Color(0xFFEAEAEA),
-                        ),
-                        child: Row(
-                          children: <Widget>[
-                            Expanded(
-                              child: Align(
-                                alignment: const Alignment(-0.92, 0.0),
-                                child: SizedBox(
-                                  width: 0.0,
-                                  height: 0.0,
-                                  child: OverflowBox(
-                                    maxWidth:
-                                        SizeConfig.blockSizeHorizontal * 42,
-                                    maxHeight:
-                                        SizeConfig.blockSizeVertical * 30,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.blue,
-                                        borderRadius: BorderRadius.circular(28),
-                                        image: DecorationImage(
-                                            image: AssetImage(
-                                                'assets/images/caves.png'),
-                                            fit: BoxFit.cover),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.black38,
-                                            blurRadius: 14,
-                                            offset: Offset(4, 8),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: Container(
-                                // color: Colors.amber,
-                                padding: EdgeInsets.only(
-                                    top: 24, left: 12, right: 12, bottom: 12),
-                                child: Column(
-                                  children: <Widget>[
-                                    Expanded(
-                                      child: Padding(
-                                        padding: EdgeInsets.only(bottom: 12),
-                                        child: Text(
-                                          "Elephanta Caves",
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontFamily: 'Raleway-Medium',
-                                            fontWeight: FontWeight.w800,
-                                            fontSize: 18,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 3,
-                                      child: Text(
-                                        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-                                        style: TextStyle(
-                                          color: Colors.black54,
-                                          fontFamily: 'Raleway-Regular',
-                                          fontSize: 15,
-                                        ),
-                                        softWrap: true,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
+                    );
+                  }),
                 ),
               ),
             ],
