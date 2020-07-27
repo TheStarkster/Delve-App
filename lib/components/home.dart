@@ -14,6 +14,7 @@ import 'package:delve_app/providers/event.dart';
 import 'package:delve_app/providers/user.dart';
 import 'package:delve_app/utils/SizeConfig.dart';
 import 'package:delve_app/utils/repository/api/handlers.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -29,6 +30,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   Color currentColor = Colors.deepPurple;
   Color inactiveColor = Colors.black;
   TabController tabBarController;
+  FirebaseMessaging _firebaseMessaging = new FirebaseMessaging();
   ApiHandlers apiHandlers = ApiHandlers();
   List<Tabs> tabs = new List();
   bool isReady;
@@ -43,6 +45,18 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         Tabs(Icons.notifications_active, "Notification", Colors.blueAccent));
     tabBarController =
         new TabController(initialIndex: currentPage, length: 3, vsync: this);
+    _firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        print("onMessage: $message");
+      },
+      onBackgroundMessage: myBackgroundMessageHandler,
+      onLaunch: (Map<String, dynamic> message) async {
+        print("onLaunch: $message");
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print("onResume: $message");
+      },
+    );
   }
 
   UserContext userContext;

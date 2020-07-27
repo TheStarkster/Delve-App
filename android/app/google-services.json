@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "525584425401",
+    "firebase_url": "https://delve-6910d.firebaseio.com",
+    "project_id": "delve-6910d",
+    "storage_bucket": "delve-6910d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:525584425401:android:fe553362f5a165a8bdd668",
+        "android_client_info": {
+          "package_name": "com.grevity.delve_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "525584425401-783ihc5a861anudla4ha9c1prphkq4ci.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1fGUz-YrDUaAawM08ygPOY3RZirsw0d4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "525584425401-783ihc5a861anudla4ha9c1prphkq4ci.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -10,6 +10,21 @@ import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+
+Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) {
+  if (message.containsKey('data')) {
+    // Handle data message
+    final dynamic data = message['data'];
+  }
+
+  if (message.containsKey('notification')) {
+    // Handle notification message
+    final dynamic notification = message['notification'];
+  }
+
+  // Or do other work.
+}
 
 void setupLocator() {
   GetIt.I.registerLazySingleton(() => ApiConstants());
@@ -96,7 +111,7 @@ class _LoginAndVerifyState extends State<LoginAndVerify> {
                     children: <Widget>[
                       EventCodeView(pageController, userContext),
                       MobileNumberView(pageController, userContext),
-                      OTPView(),
+                      OTPView(userContext),
                     ],
                   ),
                 )
@@ -250,7 +265,7 @@ class MobileNumberView extends StatefulWidget {
 class _MobileNumberViewState extends State<MobileNumberView> {
   TextEditingController _eventAttendee = new TextEditingController();
   ApiHandlers apiHandlers = new ApiHandlers();
-
+  
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -365,11 +380,15 @@ class _MobileNumberViewState extends State<MobileNumberView> {
 }
 
 class OTPView extends StatefulWidget {
+  final UserContext userContext;
+  OTPView(this.userContext);
   @override
   _OTPViewState createState() => _OTPViewState();
 }
 
 class _OTPViewState extends State<OTPView> {
+  final FirebaseMessaging _messaging = new FirebaseMessaging();
+  ApiHandlers apiHandlers = new ApiHandlers();
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -424,7 +443,21 @@ class _OTPViewState extends State<OTPView> {
                   minWidth: 150,
                   elevation: 0.0,
                   height: 42,
-                  onPressed: () {
+                  onPressed: () async {
+                     showDialog(
+                        context: context,
+                        builder: (context) {
+                          return Center(
+                            child: CircularProgressIndicator(
+                              valueColor: new AlwaysStoppedAnimation<Color>(
+                                Color(0xFF080F2F),
+                              ),
+                            ),
+                          );
+                        });
+                    var token = await _messaging.getToken();
+                    await apiHandlers.saveFcmToken(token, widget.userContext.user.id.toString());
+                    Navigator.pop(context);
                     prefs.setBool("isLoggedIn",true)
                     .then((value) => Navigator.push(
                       context,

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:delve_app/utils/repository/api/constants.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get_it/get_it.dart';
+import 'package:http/http.dart';
 
 class ApiHandlers {
   ApiConstants get apiconstants => GetIt.I<ApiConstants>();
@@ -27,5 +28,8 @@ class ApiHandlers {
       } else {
         return json;
       }
+  }
+  Future saveFcmToken(String token, String id) async {
+    await get(apiconstants.version1.saveFcmToken(id),headers: {"token":token});
   }
 }
