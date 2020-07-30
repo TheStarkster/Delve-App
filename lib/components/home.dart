@@ -6,7 +6,7 @@ import 'package:delve_app/components/options/contacts.dart';
 import 'package:delve_app/components/options/queries.dart';
 import 'package:delve_app/components/options/tickets&profile.dart';
 import 'package:delve_app/components/options/transfer.dart';
-import 'package:delve_app/components/sub-components/agendaCard.dart';
+import 'package:delve_app/components/options/welcome.dart';
 import 'package:delve_app/main.dart';
 import 'package:delve_app/models/event.dart';
 import 'package:delve_app/models/user.dart';
@@ -41,15 +41,13 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     currentPage = 0;
     tabs.add(Tabs(Icons.home, "Home", Colors.orange));
     tabs.add(Tabs(Icons.history, "Recent", Colors.pink));
-    tabs.add(
-        Tabs(Icons.notifications_active, "Notification", Colors.blueAccent));
+    tabs.add(Tabs(Icons.note, "Welcome", Colors.blueAccent));
     tabBarController =
         new TabController(initialIndex: currentPage, length: 3, vsync: this);
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         print("onMessage: $message");
       },
-      onBackgroundMessage: myBackgroundMessageHandler,
       onLaunch: (Map<String, dynamic> message) async {
         print("onLaunch: $message");
       },
@@ -167,7 +165,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
               children: <Widget>[
                 HomeTab(),
                 RecentTab(),
-                NotificationTab(),
+                ShowContent(),
               ],
             ),
           )
@@ -207,81 +205,164 @@ class _HomeTabState extends State<HomeTab> {
       height: MediaQuery.of(context).size.height,
       child: ListView(
         children: <Widget>[
-          Padding(
-            padding: EdgeInsets.all(29),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  "Events",
-                  style: TextStyle(
-                    color: Color(0xFFACACAC),
-                    fontSize: 18,
-                    fontFamily: 'Raleway-Regular',
-                  ),
-                ),
-                Text(
-                  eventContext.event.name,
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 21,
-                    fontFamily: 'Raleway-Medium',
-                  ),
-                ),
-                Center(
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 18),
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Agenda(),
-                          ),
-                        );
-                      },
-                      child: Hero(
-                        tag: 'eventHero',
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: 180,
-                          child: CachedNetworkImage(
-                            imageUrl: eventContext.event.eventImage,
-                            imageBuilder: (context, imageProvider) => Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                image: DecorationImage(
-                                  image: imageProvider,
-                                  fit: BoxFit.cover,
+          Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height / 2.7,
+            child: PageView(
+              controller: PageController(
+                viewportFraction: 0.9,
+                initialPage: 0,
+              ),
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(left: 12, right: 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        "Events",
+                        style: TextStyle(
+                          color: Color(0xFFACACAC),
+                          fontSize: 18,
+                          fontFamily: 'Raleway-Regular',
+                        ),
+                      ),
+                      Text(
+                        eventContext.event.name,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 21,
+                          fontFamily: 'Raleway-Medium',
+                        ),
+                      ),
+                      Center(
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 18),
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Agenda(),
+                                ),
+                              );
+                            },
+                            child: Hero(
+                              tag: 'eventHero',
+                              child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: 180,
+                                child: CachedNetworkImage(
+                                  imageUrl: eventContext.event.eventImage,
+                                  imageBuilder: (context, imageProvider) =>
+                                      Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      image: DecorationImage(
+                                        image: imageProvider,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                  placeholder: (context, url) => Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 180,
+                                    child: Center(
+                                      child: CircularProgressIndicator(
+                                        valueColor:
+                                            new AlwaysStoppedAnimation<Color>(
+                                          Color(0xFF080F2F),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.transparent,
+                                  borderRadius: BorderRadius.circular(12),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black54,
+                                      blurRadius: 8,
+                                      offset: Offset(0, 8),
+                                    )
+                                  ],
                                 ),
                               ),
                             ),
-                            placeholder: (context, url) => Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: 180,
-                              child: Center(
-                                child: CircularProgressIndicator(
-                                  valueColor: new AlwaysStoppedAnimation<Color>(
-                                    Color(0xFF080F2F),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 12, right: 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        "Plack Card",
+                        style: TextStyle(
+                          color: Colors.transparent,
+                          fontSize: 18,
+                          fontFamily: 'Raleway-Regular',
+                        ),
+                      ),
+                      Text(
+                        "Plack Card",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 21,
+                          fontFamily: 'Raleway-Medium',
+                        ),
+                      ),
+                      Center(
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 18),
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: 180,
+                            child: CachedNetworkImage(
+                              imageUrl: eventContext.event.plackCardImage,
+                              imageBuilder: (context, imageProvider) =>
+                                  Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              placeholder: (context, url) => Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: 180,
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                    valueColor:
+                                        new AlwaysStoppedAnimation<Color>(
+                                      Color(0xFF080F2F),
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.transparent,
-                            borderRadius: BorderRadius.circular(12),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black54,
-                                blurRadius: 8,
-                                offset: Offset(0, 8),
-                              )
-                            ],
+                            decoration: BoxDecoration(
+                              color: Colors.transparent,
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black54,
+                                  blurRadius: 8,
+                                  offset: Offset(0, 8),
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
                 ),
               ],
@@ -625,7 +706,8 @@ class _RecentTabState extends State<RecentTab> {
         .toSet()
         .toList();
   }
-  String getDay(int dayInt){
+
+  String getDay(int dayInt) {
     switch (dayInt) {
       case 1:
         return "Mon";
@@ -651,6 +733,7 @@ class _RecentTabState extends State<RecentTab> {
       default:
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -726,12 +809,16 @@ class _RecentTabState extends State<RecentTab> {
                         Expanded(
                           child: Container(
                             child: TabBarView(
-                              children: List.generate(agendaDates.length, (index) {
-                                List<Map<String,dynamic>> agendas = eventContext.event.agendas.where((e) => DateTime.parse(e["startDate"]) == agendaDates[index]).map<Map<String,dynamic>>((e) => e).toList();
-                                return Day(
-                                  agendas,
-                                  true
-                                );
+                              children:
+                                  List.generate(agendaDates.length, (index) {
+                                List<Map<String, dynamic>> agendas =
+                                    eventContext.event.agendas
+                                        .where((e) =>
+                                            DateTime.parse(e["startDate"]) ==
+                                            agendaDates[index])
+                                        .map<Map<String, dynamic>>((e) => e)
+                                        .toList();
+                                return Day(agendas, true);
                               }),
                             ),
                           ),
@@ -747,72 +834,8 @@ class _RecentTabState extends State<RecentTab> {
       ),
     );
   }
-
 }
 //Recent tab Ends Here.....
-
-//NotificationTab tab Starts Here.....
-
-class NotificationTab extends StatefulWidget {
-  @override
-  _NotificationTabState createState() => _NotificationTabState();
-}
-
-class _NotificationTabState extends State<NotificationTab> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
-      child: ListView(
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.all(24),
-            child: Container(
-              padding: EdgeInsets.all(18),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 14,
-                    offset: Offset(0, 8),
-                  ),
-                ],
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 8),
-                    child: Text(
-                      "4:04 PM",
-                      style: TextStyle(
-                        color: Colors.blueAccent,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ),
-                  Divider(),
-                  Text(
-                    "VRM Event in 15 minutes",
-                    style: TextStyle(color: Colors.black, fontSize: 21),
-                  ),
-                  Text(
-                    "Some Other Details",
-                    style: TextStyle(color: Colors.black45, fontSize: 16),
-                  ),
-                ],
-              ),
-            ),
-          )
-        ],
-      ),
-    );
-  }
-}
 
 //NotificationTab tab Ends Here.....
 class Tabs {

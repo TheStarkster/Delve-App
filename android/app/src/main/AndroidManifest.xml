@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     >
     <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:name=".Application"
         android:label="Delve"
@@ -28,6 +29,10 @@
             </intent-filter>
             <!-- END: Firebase Cloud Messaging -->
         </activity>
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <provider
                 android:name="androidx.core.content.FileProvider"
                 android:authorities="${applicationId}.fileProvider"
@@ -38,6 +43,24 @@
                     android:name="android.support.FILE_PROVIDER_PATHS"
                     android:resource="@xml/filepaths"
                     tools:replace="android:resource" />
+        </provider>
+         <provider
+            android:name="androidx.work.impl.WorkManagerInitializer"
+            android:authorities="${applicationId}.workmanager-init"
+            android:enabled="false"
+            android:exported="false" />
+
+        <provider
+            android:name="com.bluechilli.flutteruploader.FlutterUploaderInitializer"
+            android:authorities="${applicationId}.flutter-upload-init"
+            android:exported="false">
+            <!-- changes this number to configure the maximum number of concurrent tasks -->
+            <meta-data
+                android:name="com.bluechilli.flutterupload.MAX_CONCURRENT_TASKS"
+                android:value="3" />
+
+            <!-- changes this number to configure connection timeout for the upload http request -->
+            <meta-data android:name="com.bluechilli.flutteruploader.UPLOAD_CONNECTION_TIMEOUT_IN_SECONDS" android:value="3600" />
         </provider>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->

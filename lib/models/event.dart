@@ -7,6 +7,7 @@ class Event {
   int _customerId;
   String _plackCardImage;
   String _eventImage;
+  String _desc;
   List<dynamic> _agendas;
   List<dynamic> _transfers;
   List<dynamic> _eventRepresentatives;
@@ -23,6 +24,7 @@ class Event {
   List get transfers => _transfers;
   List get eventRepresentatives => _eventRepresentatives;
   Map get location => _location;
+  String get desc => _desc;
 
   Event.fromJSON(Map<String, dynamic> json){
     _id = json["id"];
@@ -35,5 +37,6 @@ class Event {
     _transfers = json["Transfers"];
     _eventRepresentatives = json["Representatives_for_Events"];
     _location = json["Locations"];
+    _desc = json["description"];
   }
 }
