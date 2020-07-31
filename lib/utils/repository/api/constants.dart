@@ -1,5 +1,5 @@
 class Constants {
-  static String get baseURL => "http://f70457bf1879.ngrok.io/";
+  static String get baseURL => "http://162.241.71.139:5000/";
 }
 class Version1 {
   String getEvent(String id) => Constants.baseURL + "v1/events/read/" + id;
