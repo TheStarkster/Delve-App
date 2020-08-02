@@ -207,7 +207,7 @@ class _HomeTabState extends State<HomeTab> {
         children: <Widget>[
           Container(
             width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height / 2.7,
+            height: MediaQuery.of(context).size.height / 2.3,
             child: PageView(
               controller: PageController(
                 viewportFraction: 0.9,
@@ -215,7 +215,7 @@ class _HomeTabState extends State<HomeTab> {
               ),
               children: [
                 Padding(
-                  padding: EdgeInsets.only(left: 12, right: 12),
+                  padding: EdgeInsets.only(left: 12, right: 12,top: 26),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
@@ -297,12 +297,12 @@ class _HomeTabState extends State<HomeTab> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(left: 12, right: 12),
+                  padding: EdgeInsets.only(left: 12, right: 12,top: 26),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        "Plack Card",
+                        "Pla Card",
                         style: TextStyle(
                           color: Colors.transparent,
                           fontSize: 18,
@@ -310,7 +310,7 @@ class _HomeTabState extends State<HomeTab> {
                         ),
                       ),
                       Text(
-                        "Plack Card",
+                        "Pla Card",
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 21,
@@ -458,7 +458,7 @@ class _HomeTabState extends State<HomeTab> {
                                   "Profile & Tickets",
                                   style: TextStyle(
                                     color: Colors.white70,
-                                    fontSize: 16,
+                                    fontSize: 14,
                                     fontFamily: 'Raleway-Light',
                                   ),
                                 ),

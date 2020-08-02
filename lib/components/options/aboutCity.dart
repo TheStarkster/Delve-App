@@ -36,6 +36,70 @@ class _AboutCityState extends State<AboutCity> {
               Container(
                 width: MediaQuery.of(context).size.width,
                 height: SizeConfig.blockSizeVertical * 46,
+                child:CachedNetworkImage(
+                  imageUrl: location["Cities"]["image"],
+                  imageBuilder: (context, imageProvider) => Container(
+                    child: Padding(
+                      padding: EdgeInsets.all(24),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            location["Cities"]["name"],
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w800,
+                              fontSize: 48,
+                              fontFamily: 'Raleway-Bold',
+                            ),
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Icon(
+                                Icons.location_on,
+                                color: Colors.white,
+                              ),
+                              Text(
+                                location["Countries"]["name"],
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 28,
+                                  fontFamily: 'Raleway-Medium',
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black38,
+                          blurRadius: 14,
+                          offset: Offset(4, 8),
+                        ),
+                      ],
+                      image: DecorationImage(
+                        image: imageProvider,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  placeholder: (context, url) => Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 180,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        valueColor: new AlwaysStoppedAnimation<Color>(
+                          Color(0xFF080F2F),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
                 decoration: BoxDecoration(
                   boxShadow: [
                     BoxShadow(
@@ -49,45 +113,8 @@ class _AboutCityState extends State<AboutCity> {
                     bottomLeft: Radius.circular(32),
                     bottomRight: Radius.circular(32),
                   ),
-                  image: DecorationImage(
-                    image: AssetImage('assets/images/bombay.png'),
-                    fit: BoxFit.cover,
-                  ),
                 ),
-                child: Padding(
-                  padding: EdgeInsets.all(24),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        location["Cities"]["name"],
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w800,
-                          fontSize: 48,
-                          fontFamily: 'Raleway-Bold',
-                        ),
-                      ),
-                      Row(
-                        children: <Widget>[
-                          Icon(
-                            Icons.location_on,
-                            color: Colors.white,
-                          ),
-                          Text(
-                            location["Countries"]["name"],
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 28,
-                              fontFamily: 'Raleway-Medium',
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
+
               ),
               Container(
                 width: SizeConfig.blockSizeHorizontal * 100,
