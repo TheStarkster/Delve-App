@@ -3,6 +3,7 @@ import 'package:cuberto_bottom_bar/cuberto_bottom_bar.dart';
 import 'package:delve_app/components/options/aboutCity.dart';
 import 'package:delve_app/components/options/agendas.dart';
 import 'package:delve_app/components/options/contacts.dart';
+import 'package:delve_app/components/options/gallery.dart';
 import 'package:delve_app/components/options/queries.dart';
 import 'package:delve_app/components/options/tickets&profile.dart';
 import 'package:delve_app/components/options/transfer.dart';
@@ -602,7 +603,7 @@ class _HomeTabState extends State<HomeTab> {
                           Navigator.push(
                             context,
                             CupertinoPageRoute(
-                              builder: (context) => Querie(),
+                              builder: (context) => Gallery(),
                             ),
                           );
                         },
@@ -614,7 +615,7 @@ class _HomeTabState extends State<HomeTab> {
                               Padding(
                                 padding: EdgeInsets.only(bottom: 38),
                                 child: Text(
-                                  "Query",
+                                  "Gallery",
                                   style: TextStyle(
                                     color: Colors.white70,
                                     fontSize: 16,
@@ -628,7 +629,7 @@ class _HomeTabState extends State<HomeTab> {
                           height: SizeConfig.blockSizeVertical * 20,
                           decoration: BoxDecoration(
                             image: DecorationImage(
-                              image: AssetImage('assets/images/query.png'),
+                              image: AssetImage('assets/images/gallery.png'),
                               fit: BoxFit.fill,
                             ),
                             borderRadius: BorderRadius.circular(16),
@@ -667,6 +668,52 @@ class _HomeTabState extends State<HomeTab> {
                           decoration: BoxDecoration(
                             image: DecorationImage(
                               image: AssetImage('assets/images/agendas.png'),
+                              fit: BoxFit.fill,
+                            ),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.only(top: 12),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                              builder: (context) => Querie(),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              Padding(
+                                padding: EdgeInsets.only(bottom: 38),
+                                child: Text(
+                                  "Query",
+                                  style: TextStyle(
+                                    color: Colors.white70,
+                                    fontSize: 16,
+                                    fontFamily: 'Raleway-Light',
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          width: SizeConfig.blockSizeVertical * 20,
+                          height: SizeConfig.blockSizeVertical * 20,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage('assets/images/query.png'),
                               fit: BoxFit.fill,
                             ),
                             borderRadius: BorderRadius.circular(16),

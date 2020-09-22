@@ -26,6 +26,7 @@ dependencies:
   image_picker: 0.6.2
   image_cropper: ^1.2.3
   flutter_html: ^1.0.0-pre.1
+  flutter_downloader: ^1.5.0
 
 dev_dependencies:
   flutter_test:

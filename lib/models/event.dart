@@ -12,6 +12,7 @@ class Event {
   List<dynamic> _transfers;
   List<dynamic> _eventRepresentatives;
   Map<String, dynamic> _location;
+  List<dynamic> _eventGallery;
 
   int get id => _id;
   String get name => _name;
@@ -25,6 +26,15 @@ class Event {
   List get eventRepresentatives => _eventRepresentatives;
   Map get location => _location;
   String get desc => _desc;
+  List<dynamic> get eventGallery => _eventGallery;
+
+  setEventGalleryImages(List<dynamic> gallery){
+    _eventGallery = gallery;
+  }
+
+  setSingleGalleryImage(Map<String, dynamic> image){
+    _eventGallery.add(image);
+  }
 
   Event.fromJSON(Map<String, dynamic> json){
     _id = json["id"];
@@ -39,4 +49,5 @@ class Event {
     _location = json["Locations"];
     _desc = json["description"];
   }
+
 }

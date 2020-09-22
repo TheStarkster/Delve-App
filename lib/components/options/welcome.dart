@@ -22,6 +22,7 @@ class _ShowContentState extends State<ShowContent> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.all(24),
       child: Html(
         data: eventContext.event.desc,
       ),

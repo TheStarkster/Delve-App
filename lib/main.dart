@@ -7,6 +7,7 @@ import 'package:delve_app/utils/repository/api/constants.dart';
 import 'package:delve_app/utils/repository/api/handlers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,6 +19,7 @@ void setupLocator() {
 SharedPreferences prefs;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await FlutterDownloader.initialize();
   setupLocator();
   prefs = await SharedPreferences.getInstance();
   return runApp(

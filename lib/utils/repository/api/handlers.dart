@@ -32,4 +32,9 @@ class ApiHandlers {
   Future saveFcmToken(String token, String id) async {
     await get(apiconstants.version1.saveFcmToken(id),headers: {"token":token});
   }
+
+  Future getGallery(String eventId) async {
+    Response res = await get(apiconstants.version1.getGallery(eventId));
+    return jsonDecode(res.body);
+  }
 }

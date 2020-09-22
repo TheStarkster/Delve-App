@@ -8,4 +8,14 @@ class EventContext extends ChangeNotifier{
     _event = event;
     notifyListeners();
   }
+
+  void setGalleryImages(List<dynamic> gallery){
+    _event.setEventGalleryImages(gallery);
+    notifyListeners();
+  }
+
+  void setSingleGalleryImage(Map<String, dynamic> image){
+    _event.setSingleGalleryImage(image);
+    notifyListeners();
+  }
 }
