@@ -4,7 +4,7 @@ import 'package:delve_app/providers/company.dart';
 import 'package:delve_app/utils/repository/api/handlers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:provider/provider.dart';
 
 class AboutDelve extends StatefulWidget {
@@ -74,8 +74,11 @@ class _AboutDelveState extends State<AboutDelve> {
                       ? Container(
                     child: Text("No Description Available :("),
                   )
-                      : Html(
-                    data: companyContext.company.desc,
+                      : Container(
+                    // color: Colors.green,
+                    child: HtmlWidget(
+                        companyContext.company.desc
+                    )
                   ),
                 ),
                 Padding(
