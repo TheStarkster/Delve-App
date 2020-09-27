@@ -10,6 +10,8 @@ class Version1 {
   String get saveImageToGallery => Constants.baseURL + "v1/events/upload-image";
   String get getCompanyDescription => Constants.baseURL + "v1/about-company/get-description";
   String get getCompanyGallery => Constants.baseURL + "v1/about-company/get-all-images";
+  String getQueries(String eventId) => Constants.baseURL + "v1/query/get/" + eventId;
+  String get createQuery => Constants.baseURL + "v1/query/create";
 }
 class ApiConstants {
   Version1 get version1 => Version1();

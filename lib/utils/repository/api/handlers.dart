@@ -47,4 +47,20 @@ class ApiHandlers {
     Response res = await get(apiconstants.version1.getCompanyGallery);
     return jsonDecode(res.body);
   }
+  
+  Future getQueries(String eventId) async {
+    Response res = await get(apiconstants.version1.getQueries(eventId));
+    return jsonDecode(res.body);
+  }
+
+  Future createQuery(String eventId, String attendeeId, String question) async {
+    Response res = await post(apiconstants.version1.createQuery, body: {
+      "body": jsonEncode({
+        "eventId": eventId,
+        "attendeeId": attendeeId,
+        "question": question
+      })
+    });
+    return res.body == "Created";
+  }
 }
