@@ -38,30 +38,6 @@ class _ProfileTicketsState extends State<ProfileTickets> {
     super.initState();
     isTicketUploaded = prefs.getBool("isTicketUploaded");
   }
-  // upload(File imageFile) async {    
-  //   print("apiConstants.version1.saveIdProof");
-  //   print(apiConstants.version1.saveIdProof);
-  //   // ignore: deprecated_member_use
-  //   var stream = new http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
-  //     var length = await imageFile.length();
-  //     var uri = Uri.parse(apiConstants.version1.saveIdProof);
-
-  //    var request = new http.MultipartRequest("POST", uri);
-  //     var multipartFile = new http.MultipartFile('IdProof', stream, length,
-  //         filename: pathPackage.basename(imageFile.path),
-  //       );
-  //         //contentType: new MediaType('image', 'png'));
-  //     request.files.add(multipartFile);
-  //     request.fields.addAll({
-  //       "EventId": prefs.getString("EventId"),
-  //       "AttendeeName": userContext.user.name
-  //     });
-  //     var response = await request.send();
-  //     print(response.statusCode);
-  //     response.stream.transform(utf8.decoder).listen((value) {
-  //       print(value);
-  //     });
-  //   }
   Future pickIdProof() async {
     showDialog(
       context: context,

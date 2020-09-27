@@ -8,6 +8,7 @@ import 'package:delve_app/components/options/queries.dart';
 import 'package:delve_app/components/options/tickets&profile.dart';
 import 'package:delve_app/components/options/transfer.dart';
 import 'package:delve_app/components/options/welcome.dart';
+import 'package:delve_app/components/options/widgets/about.dart';
 import 'package:delve_app/main.dart';
 import 'package:delve_app/models/event.dart';
 import 'package:delve_app/models/user.dart';
@@ -43,8 +44,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     tabs.add(Tabs(Icons.home, "Home", Colors.orange));
     tabs.add(Tabs(Icons.history, "Recent", Colors.pink));
     tabs.add(Tabs(Icons.note, "Welcome", Colors.blueAccent));
+    tabs.add(Tabs(Icons.info_outline, "About", Colors.green));
     tabBarController =
-        new TabController(initialIndex: currentPage, length: 3, vsync: this);
+        new TabController(initialIndex: currentPage, length: 4, vsync: this);
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         print("onMessage: $message");
@@ -167,6 +169,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                 HomeTab(),
                 RecentTab(),
                 ShowContent(),
+                AboutDelve()
               ],
             ),
           )
@@ -205,6 +208,7 @@ class _HomeTabState extends State<HomeTab> {
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
       child: ListView(
+        physics: BouncingScrollPhysics(),
         children: <Widget>[
           Container(
             width: MediaQuery.of(context).size.width,

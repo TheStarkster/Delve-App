@@ -155,9 +155,7 @@ class _GalleryState extends State<Gallery> {
           isExtended: true,
           child: Icon(Icons.cloud_upload),
           tooltip: "Increment",
-          onPressed: () {
-            print("Pressed");
-          },
+          onPressed:pickImage,
         ),
         duration: Duration(milliseconds: 100),
         opacity: fabIsVisible ? 1 : 0,

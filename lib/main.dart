@@ -1,6 +1,7 @@
 import 'package:delve_app/components/home.dart';
 import 'package:delve_app/models/event.dart';
 import 'package:delve_app/models/user.dart';
+import 'package:delve_app/providers/company.dart';
 import 'package:delve_app/providers/event.dart';
 import 'package:delve_app/providers/user.dart';
 import 'package:delve_app/utils/repository/api/constants.dart';
@@ -30,6 +31,9 @@ Future<void> main() async {
         ),
         ChangeNotifierProvider(
           create: (context) => EventContext(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => CompanyContext(),
         ),
       ],
       child: DelveApp(prefs),

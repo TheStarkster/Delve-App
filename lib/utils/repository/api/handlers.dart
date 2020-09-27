@@ -37,4 +37,14 @@ class ApiHandlers {
     Response res = await get(apiconstants.version1.getGallery(eventId));
     return jsonDecode(res.body);
   }
+
+  Future getCompanyDescription() async {
+    Response res = await get(apiconstants.version1.getCompanyDescription);
+    return jsonDecode(res.body);
+  }
+
+  Future getCompanyGallery() async {
+    Response res = await get(apiconstants.version1.getCompanyGallery);
+    return jsonDecode(res.body);
+  }
 }
